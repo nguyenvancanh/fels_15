@@ -24,6 +24,12 @@ class User extends AppModel {
 				'rule' => array('email'),
 				'message' => 'Must be valid email'
 			)
+		),
+		'fullname' => array(
+			'notempty' => array(
+				'rule' => array('notempty'),
+				'message' => 'Fullname equired'
+			)
 		)
 	);
 

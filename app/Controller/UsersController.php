@@ -1,9 +1,15 @@
 <?php
 class UsersController extends AppController {
+	public $use = array('User');
 
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->allow('register', 'login', 'logout');
+	}
+
+	public function index() {
+		$users = $this->User->find('all', array('oder' => 'id desc'));
+		$this->set('users', $users);
 	}
 
 	public function login() {
@@ -31,6 +37,23 @@ class UsersController extends AppController {
 				unset($this->request->data['User']['password']);
 				unset($this->request->data['User']['password_confirm']);
 			}
+		}
+	}
+
+	public function delete($id = null) {
+		if (!$this->request->is('post')) {
+			throw new MethodNotAllowedException();
+		}
+		$this->User->id = $id;
+		if (!$this->User->exists()) {
+			throw new NotFoundException(__('Invalid user'));
+		}
+		if ($this->User->delete()) {
+			$this->Session->setFlash(__('User delete'));
+			$this->redirect(array('action' => 'index'));
+		} else {
+			$this->Session->setFlash(__('User was not delete'));
+			$this->redirect(array('action' => 'index'));
 		}
 	}
 }
