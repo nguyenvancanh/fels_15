@@ -1,0 +1,84 @@
+<div class="users form">
+	<div class="content">
+		<h2> <?php echo __("List User"); ?> </h2>
+		<?php
+			if (isset($users) && is_array($users)) :
+		?>
+		<table class="table table-hover">
+			<tr>
+				<td>
+					<?php echo __("ID"); ?>
+				</td>
+				<td>
+					<?php echo __("Username"); ?>
+				</td>
+				<td>
+					<?php echo __("Fullname"); ?>
+				</td>
+				<td>
+					<?php echo __("Email"); ?>
+				</td>
+				<td>
+					<?php echo __("Modified"); ?>
+				</td>
+				<td colspan="2">
+					<?php echo __("Action"); ?>
+				</td>
+			</tr>
+			<?php
+				if (!empty($users)) :
+					foreach ($users as $user): 
+			?>
+			<tr>
+				<td>
+					<?php echo $user['User']['id']; ?>
+				</td>
+				<td>
+					<?php echo $user['User']['username']; ?>
+				</td>
+				<td>
+					<?php echo $user['User']['fullname']; ?>
+				</td>
+				<td>
+					<?php echo $user['User']['email']; ?>
+				</td>
+				<td>
+					<?php echo $user['User']['modified']; ?>
+				</td>
+				<td>
+					<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $user['User']['id']), null, __('Are you sure you want to delete # %s ?', $user['User']['id'])); ?>
+				</td>
+			</tr>
+			<?php 
+					endforeach;
+				else :
+					echo __("not user found");
+				endif;
+			?>
+		</table>
+		<?php	
+			endif;
+		?>
+	</div>
+</div>
+<div class="actions">
+	<h3>
+		<?php echo __('Action'); ?>
+	</h3>
+	<ul>
+		<li><?php echo $this->Html->link(__('Users'), array('controller' => 'users', 'action' => 'index')); ?></li>
+	</ul>
+	<ul>
+		<li><?php echo $this->Html->link(__('Category'), array('controller' => 'categories','action' => 'index')); ?></li>
+	</ul>
+	<ul>
+		<li><?php echo $this->Html->link(__('Word'), array('controller' => 'words' ,'action' => 'index')); ?></li>
+	</ul>
+	<ul>
+		<li><?php echo $this->Html->link(__('Lesson'), array('controller' => 'lessons', 'action' => 'index')); ?></li>
+	</ul>
+	<ul>
+		<li><?php echo $this->Html->link(__('Logout'), array('controller' => 'users', 'action' => 'logout')); ?></li>
+	</ul>
+</div>
+
