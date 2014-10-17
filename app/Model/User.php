@@ -25,6 +25,12 @@ class User extends AppModel {
 				'message' => 'Must be valid email'
 			)
 		)
+		'fullname' => array(
+			'notempty' => array(
+				'rule' => array('notempty'),
+				'message' => 'Fullname is required'
+			)
+		)
 	);
 
 	public function beforeSave($options = array()) {

@@ -6,6 +6,11 @@ class UsersController extends AppController {
 		$this->Auth->allow('register', 'login', 'logout');
 	}
 
+	public function index() {
+		$users = $this->User->find('all', array('order' => 'id desc'));
+		$this->set('users', $users);
+	}
+
 	public function login() {
 		if ($this->request->is('post')) {
 			if ($this->Auth->login()) {
@@ -32,5 +37,27 @@ class UsersController extends AppController {
 				unset($this->request->data['User']['password_confirm']);
 			}
 		}
+	}
+
+	public function delete($id = null) {
+		if (!$this->request->is('post')) {
+			throw new MethodNotAllowedException();
+		}
+		$this->User->id = $id;
+		if (!$this->User->exists()) {
+			throw new NotFoundException(__('Invalid user'));
+		}
+		if ($this->Auth->user('is_admin') && ($this->Auth->user('id') != $id)) {
+			if ($this->User->delete()) {
+				$this->Session->setFlash(__('User was deleted'));
+				$this->redirect(array('action' => 'index'));
+			} else {
+				$this->Session->setFlash(__('User was not deleted'));
+				$this->redirect(array('action' => 'index'));
+			}
+		} else {
+			$this->Session->setFlash(__('Only admin can delete'));
+			$this->redirect(array('action' => 'index'));
+		} 
 	}
 }
