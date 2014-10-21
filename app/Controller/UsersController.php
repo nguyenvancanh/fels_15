@@ -60,4 +60,52 @@ class UsersController extends AppController {
 			$this->redirect(array('action' => 'index'));
 		} 
 	}
+
+	public function edit_profile($id = null) {
+		$actionHeading = __("Edit profile");
+		$actionSogan = __("Please input all fields");
+		$this->set(compact('actionHeading', 'actionSogan'));
+		if ($id && empty($this->data)) {
+			$this->Session->setFlash(__("Invalid Edit"));
+		}
+		if (!empty($this->data)) {
+			if ($this->User->save($this->data)) {
+				$this->Session->setFlash(__('The Profile has been saved'));
+				$this->redirect(
+						array(
+							'controller' => 'homes',
+							'action' => 'index'
+						)
+				);
+			} else {
+				$this->Session->setFlash(__('The Profile could not saved'));
+			}
+		}
+		if (empty($this->data)) {
+			$this->data = $this->User->read(null, $id);
+		}
+	}
+
+	public function change_password() {
+		if ($this->request->is('post')) {
+			$id = $this->Session->read('User.userid');
+			$old_pass = $this->request->data['User']['old_password'];
+			$check = $this->User->checkPass($id, $old_pass);
+			$this->User->set($this->request->data);
+			if ($check) {
+				if ($this->User->validates()) {
+					$this->User->saveField('password', $this->request->data['User']['confirm_password']);
+					if ($this->User->save($this->request->data, false)) {
+						$this->Session->setFlash(__('Change password successful'));
+						$this->redirect(array('controller' => 'homes', 'action' => 'index'));
+					}
+				} else {
+					$this->Session->setFlash(__('Please enter correct all fields'));
+				}
+			} else {
+				$this->Session->setFlash(__(' Old password not correct'));
+				$this->redirect(array('controller' => 'users', 'action' => 'change_password'));
+			}
+		}
+	}
 }
