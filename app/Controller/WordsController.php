@@ -57,4 +57,20 @@ class WordsController extends AppController {
 			$this->redirect(array('action' => 'index'));
 		}
 	}
+
+	public function user_view() {
+		$options = $this->Word->getRadiobox();
+		$categories = $this->Category->find('list');
+		$this->set(compact('categories', 'options'));
+		if ($this->request->is('post')) {
+			$category_id = $this->request->data['Word']['category_id'];
+			$chose = $this->request->data['Word']['Chose'];
+			$words = $this->Word->checkandFilter($category_id, $chose);
+			if ($words) {
+				$this->set('words', $words);
+			} else {
+				$this->Session->setFlash(__('Please chose category and filter conditions'));
+			}	
+		}
+	}
 }
